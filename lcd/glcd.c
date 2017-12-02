@@ -22,8 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include <avr/io.h>
 #include <stdlib.h>
+#include <string.h>
 #include <avr/pgmspace.h> 
 #include "glcd.h"
+#include "util.h"
 
 extern const uint8_t PROGMEM font[];
 

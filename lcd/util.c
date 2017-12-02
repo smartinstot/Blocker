@@ -25,7 +25,7 @@ void delay_10us(uint8_t ns)
   while (ns != 0) {
     ns--;
     for (i=0; i< 30; i++) {
-      nop;
+//      nop;
     }
   }
 }

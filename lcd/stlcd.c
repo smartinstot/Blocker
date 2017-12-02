@@ -28,7 +28,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include "stlcd.h"
 #include "glcd.h"
 #include "util.h"
-#include "icon.h"
 
 
 #define BLA_DDR DDRB
@@ -144,16 +143,7 @@ uint8_t buffer[128*64/8] = {
 
 };
 
-int main(void) {
-  setup();
-  while (1) {
-    loop();
-  }
-}
-
-void loop(void) {}
-
-void setup(void) {
+void setup_lcd(void) {
 
     //Serial.begin(9600);
   uart_init(BRRL_192);
@@ -206,7 +196,7 @@ void setup(void) {
     //fillcircle(buffer, 32, 32, 10, 1);
     //testdrawchar(buffer);
     // drawstring(buffer, 0, 0, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-    testdrawbitmap(buffer, logo16_glcd_bmp, 16, 16);
+//    testdrawbitmap(buffer, logo16_glcd_bmp, 16, 16);
 
     LED_PORT &= ~_BV(LED);
     write_buffer(buffer);
@@ -231,14 +221,14 @@ void testdrawbitmap(uint8_t *buff, const uint8_t *bitmap, uint8_t w, uint8_t h) 
   while (1) {
     // draw each icon
     for (uint8_t f=0; f< NUMFLAKES; f++) {
-      drawbitmap(buffer, icons[f][XPOS], icons[f][YPOS], logo16_glcd_bmp, w, h, 1);
+//      drawbitmap(buffer, icons[f][XPOS], icons[f][YPOS], logo16_glcd_bmp, w, h, 1);
     }
     write_buffer(buffer);
     _delay_ms(200);
     
     // then erase it + move it
     for (uint8_t f=0; f< NUMFLAKES; f++) {
-      drawbitmap(buffer, icons[f][XPOS], icons[f][YPOS],  logo16_glcd_bmp, w, h, 0);
+//      drawbitmap(buffer, icons[f][XPOS], icons[f][YPOS],  logo16_glcd_bmp, w, h, 0);
       // move it
       icons[f][YPOS] += icons[f][DELTAY];
       // if its gone, reinit
