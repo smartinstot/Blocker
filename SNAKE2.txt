@@ -1,0 +1,199 @@
+//check out seq( for faster spped than For(
+// make goto for deleting all variables
+//***********************************************************************
+//VARIABLES:
+//K = getKey var
+//W = direction setting
+//L1= X coordinate
+//L2= Y coordinate
+//X = x coordinate (snake head)
+//Z = y coordinate (snake head)
+//L = x coordinate (snake food)
+//M = y coordinate (snake food)
+//B = list posistion counter
+//S = list limit (its +1 over the snake lenght)
+//I = Counting variable
+//F = Flip flop Switch (for screen rollback function)
+//***********************************************************************
+//setup
+ClrDraw
+PlotsOff 
+AxesOff
+GridOff
+LabelOff
+//score value
+0->H
+//initial value for B and S.. since snake starts off as 10-pixels long
+10->B
+11->S
+DelVar L1
+DelVar L2
+randInt(11,82)->X
+randInt(11,51)->Z
+randInt(1,4)->W
+//generate 10 numbers
+For(I,1,10)
+If W=1
+Then
+Z-1->Z
+X->L1(I)
+Z->L2(I)
+End
+If W=2
+Then
+Z+1->Z
+X->L1(I)
+Z->L2(I)
+End
+If W=3
+Then
+X-1->X
+X->L1(I)
+Z->L2(I)
+End
+If W=4
+Then
+X+1->X
+X->L1(I)
+Z->L2(I)
+End
+Pxl-On(Z,X)
+End
+
+//generate random food
+1->I
+While I
+randInt(1,62)->M
+randInt(1,94)->L
+If pxl-Test(M,L)=0
+Then
+Pxl-On(M,L)
+0->I
+End
+End
+
+//infinite loop
+While 1
+//delay
+//For(S,1,10)
+//End
+//getkey then flip W value
+getKey->K
+If K!=0
+Then
+//W=1:UP; W=2:DOWN; W=3:LEFT; W=4:RIGHT
+1(K=25)(W!=2)+2(K=34)(W!=1)+3(K=24)(W!=4)+4(K=26)(W!=3)->F
+F(F!=0)+W(F=0)->W
+//1(K=25)(W!=2)+2(K=34)(W!=1)+3(K=24)(W!=4)+4(K=26)(W!=3)+(W)(K=25)(W=2)+(W)(K=34)(W=1)+(W)(K=24)(W=4)+(W)(K=26)(W=3)+(W)(K!=25)(K!=34)(K!=24)(K!=26)->W
+//quit prog
+If K=105
+Then
+ClrDraw
+ClrHome
+Disp "GAME ENDED"
+Goto A
+End
+//if K!=0 end
+End
+
+
+Text(0,0,X)
+Text(6,0,Z)
+Text(12,0,L)
+Text(18,0,M)
+Text(24,0,W)
+Text(30,0,I)
+
+//vars++
+Z-(W=1)+(W=2)->Z
+X-(W=3)+(W=4)->X
+
+//Rollback
+//Original Version with the 0*(ABC):
+//0(Z=62)(W=2)+Z((Z!=62) or (W!=2))->Z
+//62(Z=0)(W=1)+Z((Z!=0) or (W!=1))->Z
+//0(X=94)(W=4)+X((X!=94) or (W!=4))->X
+//94(X=0)(W=3)+X((X!=0) or (W!=3))->X
+
+Z((Z!=62) or (W!=2))->Z
+62(Z=0)(W=1)+Z((Z!=0) or (W!=1))->Z
+X((X!=94) or (W!=4))->X
+94(X=0)(W=3)+X((X!=0) or (W!=3))->X
+
+
+//increment counter, plus roll back code
+B+1->B
+1(B=S)+B(B!=S)->B
+
+//if snake is eating the food
+If Z=M and X=L
+Then
+//expanding code...
+
+//for loop starts at list's limit (S), and assigns to the value of S
+//the value of its precedor (S-1) until it reaches B
+
+//why B+1 in the loop? because S is taking the precedent value and 
+//putting it in front, you want it to stop atthe movement of B, therefore
+//S needs to be one bigger than B, else it will also shift the number
+//before B
+For(I,S,B+1,~1)
+L1(I-1)->L1(I)
+L2(I-1)->L2(I)
+End
+//make S one step bigger
+S+1->S
+//then assign food value (currerntly snake's head too) to duplicate slot
+//(position of B, where food was)
+//could use LM or XZ... both are confondues atm
+X->L1(B)
+Z->L2(B)
+Pxl-Off(L2(B+1),L1(B+1))
+//generate random food
+1->I
+While I
+randInt(1,62)->M
+randInt(1,94)->L
+If pxl-Test(M,L)=0
+Then
+Pxl-On(M,L)
+0->I
+End
+End
+
+//if snake head is not on food
+Else
+//if its touching other black pixels
+If pxl-Test(Z,X)
+Then
+Disp "GAME OVER"
+Goto A
+//else if it aint, turn end pixel off, and head on
+Else
+Pxl-Off(L2(B),L1(B))
+X->L1(B)
+Z->L2(B)
+Pxl-On(Z,X)
+End
+//if z=m and x=l end
+End
+
+//while loop end
+End
+
+//goto for delvar
+Lbl A
+DelVar K
+DelVar L1
+DelVar L2
+DelVar B
+DelVar S
+DelVar X
+DelVar Z
+DelVar M
+DelVar L
+DelVar I
+DelVar W
+DelVar F
+ClrDraw
+AxesOn
